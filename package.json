@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Upload file into an S3 bucket with AWS Lambda",
-  "main": "index.js",
+  "main": "index.cjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
