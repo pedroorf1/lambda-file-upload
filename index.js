@@ -1,9 +1,11 @@
 // const Multipart = require("lambda-multipart");
 // const AWS = require("aws-sdk");
 import Multipart from "lambda-multipart";
-import AWS from "aws-sdk";
+//import AWS from "aws-sdk";
+import * as AWS from "@aws-sdk/client-s3"
+import { v4 as uuidv4 } from 'uuid'
+
 const s3 = new AWS.S3();
-const uuidv4 = require("uuid/v4");
 
 module.exports.upload = async (event, context) => {
   const { fields, files } = await parseMultipartFormData(event);
