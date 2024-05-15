@@ -70,6 +70,12 @@ const getFileExtension = file => {
   if (contentType == "image/jpeg") {
     return "jpg";
   }
+  if (contentType == "video/mp4") {
+    return "mp4";
+  }
+  if (contentType == "application/x-mpegURL") {
+    return "m3u8";
+  }
 
   throw new Error(`Unsupported content type "${contentType}".`);
 };
