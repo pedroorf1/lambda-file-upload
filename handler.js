@@ -1,5 +1,7 @@
-const Multipart = require("lambda-multipart");
-const AWS = require("aws-sdk");
+// const Multipart = require("lambda-multipart");
+// const AWS = require("aws-sdk");
+import Multipart from "lambda-multipart";
+import AWS from "aws-sdk";
 const s3 = new AWS.S3();
 const uuidv4 = require("uuid/v4");
 
@@ -45,12 +47,11 @@ const uploadFileIntoS3 = async file => {
     Key: `${uuidv4()}.${ext}`,
     Body: file
   };
-
+  const fileName = options.Key
   try {
     await s3.upload(options).promise();
     console.log(
-      `File uploaded into S3 bucket: "${
-        process.env.file_s3_bucket_name
+      `File uploaded into S3 bucket: "${process.env.file_s3_bucket_name
       }", with key: "${fileName}"`
     );
   } catch (err) {
