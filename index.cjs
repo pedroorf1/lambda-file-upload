@@ -1,9 +1,11 @@
-// const Multipart = require("lambda-multipart");
+const Multipart = require("lambda-multipart");
 // const AWS = require("aws-sdk");
-import Multipart from "lambda-multipart";
+// import Multipart from "lambda-multipart";
 //import AWS from "aws-sdk";
-import * as AWS from "@aws-sdk/client-s3"
-import { v4 as uuidv4 } from 'uuid'
+// import * as AWS from "@aws-sdk/client-s3"
+const AWS = requre("@aws-sdk/client-s3")
+// import { v4 as uuidv4 } from 'uuid'
+const { v4: uuidv4 } = require('uuid');
 
 const s3 = new AWS.S3();
 
