@@ -3,13 +3,14 @@ const Multipart = require("lambda-multipart");
 // import Multipart from "lambda-multipart";
 //import AWS from "aws-sdk";
 // import * as AWS from "@aws-sdk/client-s3"
-const AWS = requre("@aws-sdk/client-s3")
+const AWS = require("@aws-sdk/client-s3")
 // import { v4 as uuidv4 } from 'uuid'
 const { v4: uuidv4 } = require('uuid');
 
-const s3 = new AWS.S3();
+const s3 = new AWS.S3Client();
+const PutObjectCommand = AWS.PutObjectCommand;
 
-module.exports.upload = async (event, context) => {
+module.exports.handler = async (event, context) => {
   const { fields, files } = await parseMultipartFormData(event);
 
   if (files == null || files.length == 0) {
@@ -45,6 +46,7 @@ const parseMultipartFormData = async event => {
 };
 
 const uploadFileIntoS3 = async file => {
+  console.log("\nEnvs: ", process.env)
   const ext = getFileExtension(file);
   const options = {
     Bucket: process.env.file_s3_bucket_name,
@@ -53,7 +55,7 @@ const uploadFileIntoS3 = async file => {
   };
   const fileName = options.Key
   try {
-    await s3.upload(options).promise();
+    await s3.send(new PutObjectCommand(options));
     console.log(
       `File uploaded into S3 bucket: "${process.env.file_s3_bucket_name
       }", with key: "${fileName}"`
@@ -70,16 +72,25 @@ const getFileExtension = file => {
     throw new Error(`Missing "headers" from request`);
   }
 
-  const contentType = headers["content-type"];
-  if (contentType == "image/jpeg") {
-    return "jpg";
-  }
-  if (contentType == "video/mp4") {
-    return "mp4";
-  }
-  if (contentType == "application/x-mpegURL") {
-    return "m3u8";
+  if (!!headers["content-type"]) {
+    const contentType = headers["content-type"];
+
+    if (contentType == "image/jpeg") {
+      return "jpg";
+    }
+    if (contentType == "image/png") {
+      return "png";
+    }
+    if (contentType == "video/mp4") {
+      return "mp4";
+    }
+    if (contentType == "application/x-mpegURL") {
+      return "m3u8";
+    }
+    throw new Error(`Unsupported content type "${contentType}".`);
+  } else {
+    throw new Error(`No content type found in headers: "${JSON.stringify(headers)}"`);
   }
 
-  throw new Error(`Unsupported content type "${contentType}".`);
 };
+
